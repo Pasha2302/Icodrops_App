@@ -1,6 +1,6 @@
 *.log
 /temp/  # Игнорировать папку temp и ее содержимое.
-# *.txt
+*.txt
 *.json
 Data/
 New_Data/
