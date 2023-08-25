@@ -100,6 +100,7 @@ async def main():
     if os.path.isfile('index_r.txt'):
         os.remove('index_r.txt')
     logger.info("Программа завершена...")
+    print("Программа завершена...")
 
 
 if __name__ == '__main__':
@@ -119,10 +120,11 @@ if __name__ == '__main__':
             loop.run_until_complete(main())
         except KeyboardInterrupt:
             pass
+        except Exception as main_error:
+            logger.info(str(main_error))
         finally:
             try:
                 loop.run_until_complete(aio_session.close())
             except Exception as err_sess_close:
                 print(err_sess_close)
             time.sleep(.35)
-            # print('\n\nПрограмма завершена...')

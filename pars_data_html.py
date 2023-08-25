@@ -147,7 +147,8 @@ def pars_txt_data():
                                 con_sale = sale_date.text
                                 # print(f"{sale_date=}")
             except AttributeError:
-                print("2: ", file_)
+                # print("2: ", file_)
+                pass
             dict_data_text_cards['token_sale'] = con_sale
 
             received = soup.find("div", {"class": "fund-goal"}).text
@@ -158,14 +159,16 @@ def pars_txt_data():
             try:
                 website = website.parent.get('href')
             except AttributeError:
-                print("3.0: ", file_)
+                # print("3.0: ", file_)
+                pass
             dict_data_text_cards['website'] = website
 
             whitepaper = soup.find("div", {"class": "ico-right-col"}).find("div", string="WHITEPAPER")
             try:
                 whitepaper = whitepaper.parent.get('href')
             except AttributeError:
-                print("3.1: ", file_)
+                # print("3.1: ", file_)
+                pass
             dict_data_text_cards['whitepaper'] = whitepaper
 
             social_links = [link.get("href") for link in soup.find("div", {"class": "soc_links"}).find_all("a")]
@@ -296,8 +299,8 @@ def pars_txt_data():
         path_res_xlsx = str(Path(path_html_file_folder, "Txt_Data_Cards.csv"))
         try:
             df.to_csv(path_res_xlsx, index=False)
-        except OSError:
-            pass
+        except OSError as os_err:
+            raise TypeError(str(os_err))
 
 
 if __name__ == '__main__':

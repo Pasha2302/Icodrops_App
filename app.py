@@ -136,8 +136,12 @@ def generate_script_output():
     script_state = "Скрипт запущен (идет процесс сбора данных)"
 
     print("generate_script_output")
-    process = subprocess.Popen([absolute_path_to_interpreter, 'main.py'],
-                               stdout=subprocess.PIPE, universal_newlines=True)
+    try:
+        process = subprocess.Popen([absolute_path_to_interpreter, 'main.py'],
+                                   stdout=subprocess.PIPE, universal_newlines=True)
+    except Exception as error_process:
+        script_state = "\nerror_process: " + str(error_process)
+
     while True:
         time.sleep(5) # Добавьте небольшую задержку, чтобы не перегружать сервер
         output = read_last_non_empty_line('main.log')
@@ -229,7 +233,7 @@ def buttons():
 
 if __name__ == '__main__':
     try:
-        app.run(host='0.0.0.0', port=5001, debug=None)
+        app.run(host='0.0.0.0', port=5000, debug=None)
         print('Off')
     except KeyboardInterrupt as err:
         print(err)
