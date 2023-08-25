@@ -21,7 +21,7 @@ pid = os.getpid()
 toolbox.save_txt_data(data_txt=str(pid), path_file='process_id.txt')
 absolute_path_to_interpreter = sys.executable
 
-process = False
+process = 'no_start'
 file_path = str(Path('New_Data'))
 
 check_download_data = {'finish': False, 'down': False}
@@ -219,16 +219,17 @@ def buttons():
 
     elif button_value == 'button2' and button_state == 1:
         # flash("Скрипт остановлен", category='error')
-        print(f"{process.poll()=}")
-        while process.poll() is None:
-            process.terminate()
-            time.sleep(1.5)
+        if process != 'no_start':
+            print(f"{process.poll()=}")
+            while process.poll() is None:
+                process.terminate()
+                time.sleep(1.5)
+            print(f"{process.poll()=} {type(process.poll())}")
 
         if not check_download_data['finish']:
             button_state = 0
             script_state = "Скрипт остановлен (Возможно не все данные были собраны, запустите повторно...)"
-        print(f"{process.poll()=} {type(process.poll())}")
-
+        
     return redirect(url_for('index'))
 
 
