@@ -63,7 +63,7 @@ menu = [
 
 button_state = 0
 if os.path.isfile("button_state.txt"):
-    button_state = toolbox.download_txt_data(path_file='button_state.txt')
+    button_state = int(toolbox.download_txt_data(path_file='button_state.txt'))
 
 
 @app.route('/sss')
@@ -179,6 +179,7 @@ def download():
             res_file = send_file(out_path_zip, as_attachment=True, download_name=filename)
             if res_file:
                 check_download_data['down'] = True
+                button_state = 0
                 script_state = f"Не запущен (Данные получены. Последний запуск был: {start_date})"
                 return res_file
             else:
@@ -189,7 +190,6 @@ def download():
 
     else:
         script_state = f"Сбор данных не завершен, завершите сбор данных! (Последний запуск был: {start_date})"
-    button_state = 0
     return redirect(url_for('index'))
 
 
@@ -223,10 +223,11 @@ def buttons():
         while process.poll() is None:
             process.terminate()
             time.sleep(1.5)
-        script_state = "Скрипт остановлен (Возможно не все данные были собраны, запустите повторно...)"
-        print(f"{process.poll()=} {type(process.poll())}")
+
         if not check_download_data['finish']:
             button_state = 0
+            script_state = "Скрипт остановлен (Возможно не все данные были собраны, запустите повторно...)"
+        print(f"{process.poll()=} {type(process.poll())}")
 
     return redirect(url_for('index'))
 
