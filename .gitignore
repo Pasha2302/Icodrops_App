@@ -2,3 +2,5 @@
 /temp/  # Игнорировать папку temp и ее содержимое.
 *.txt
 *.json
+Data/
+New_Data/
