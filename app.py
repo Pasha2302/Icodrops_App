@@ -24,7 +24,7 @@ absolute_path_to_interpreter = sys.executable
 process = False
 file_path = str(Path('New_Data'))
 
-check_download_data = {'finish':False, 'down': False}
+check_download_data = {'finish': False, 'down': False}
 if os.path.isfile("check_download_data.json"):
     check_download_data = toolbox.download_json_data(path_file="check_download_data.json")
 
@@ -62,6 +62,8 @@ menu = [
 ]
 
 button_state = 0
+if os.path.isfile("button_state.txt"):
+    button_state = toolbox.download_txt_data(path_file='button_state.txt')
 
 
 @app.route('/sss')
@@ -143,7 +145,7 @@ def generate_script_output():
         script_state = "\nerror_process: " + str(error_process)
 
     while True:
-        time.sleep(5) # Добавьте небольшую задержку, чтобы не перегружать сервер
+        time.sleep(5)  # Добавьте небольшую задержку, чтобы не перегружать сервер
         output = read_last_non_empty_line('main.log')
         if process.poll() is not None:
             break
@@ -157,40 +159,37 @@ def generate_script_output():
         check_download_data['finish'] = True
         toolbox.save_json_data(json_data=check_download_data, path_file="check_download_data.json")
         print(f'\nFinish Process: {process.poll()=}')
-    button_state = 0
 
 
 @app.route('/download', methods=['POST'])
 def download():
+    global button_state
     global check_download_data
     global script_state
     out_path_zip = 'New_Data.zip'
     # check_download_data['finish'] = True
 
-    if button_state == 0:
-        if os.path.exists(file_path) and check_download_data['finish']:
-            # Устанавливаем имя файла, как его имя, извлеченное из пути
-            filename = out_path_zip.split('/')[-1]
-            try:
-                if not os.path.isfile(out_path_zip):
-                    script_state = f"Подождите, идет архивация данных! (Это может занять некоторое время...)"
-                    zip_folder(folder_path=file_path, output_path=out_path_zip)
-                res_file = send_file(out_path_zip, as_attachment=True, download_name=filename)
-                if res_file:
-                    check_download_data['down'] = True
-                    script_state = f"Не запущен (Данные получены. Последний запуск был: {start_date})"
-                    return res_file
-                else:
-                    script_state = f"Данные не Получены!!!"
-            except Exception as err_down:
-                print(err_down)
-                check_download_data['down'] = False
+    if os.path.exists(file_path) and check_download_data['finish']:
+        # Устанавливаем имя файла, как его имя, извлеченное из пути
+        filename = out_path_zip.split('/')[-1]
+        try:
+            if not os.path.isfile(out_path_zip):
+                script_state = f"Подождите, идет архивация данных! (Это может занять некоторое время...)"
+                zip_folder(folder_path=file_path, output_path=out_path_zip)
+            res_file = send_file(out_path_zip, as_attachment=True, download_name=filename)
+            if res_file:
+                check_download_data['down'] = True
+                script_state = f"Не запущен (Данные получены. Последний запуск был: {start_date})"
+                return res_file
+            else:
+                script_state = f"Данные не Получены!!!"
+        except Exception as err_down:
+            print(err_down)
+            check_download_data['down'] = False
 
-        else:
-            script_state = f"Сбор данных не завершен, завершите сбор данных! (Последний запуск был: {start_date})"
     else:
-        script_state = f"Сбор данных не завершен, (Подождите завершения работы программы!)"
-
+        script_state = f"Сбор данных не завершен, завершите сбор данных! (Последний запуск был: {start_date})"
+    button_state = 0
     return redirect(url_for('index'))
 
 
@@ -239,6 +238,7 @@ if __name__ == '__main__':
         print(err)
     finally:
         toolbox.save_txt_data(start_date, path_file='start_date.txt')
+        toolbox.save_txt_data(str(button_state), path_file='button_state.txt')
         toolbox.save_txt_data(script_state, path_file='script_state.txt')
         toolbox.save_json_data(json_data=check_download_data, path_file="check_download_data.json")
         sys.exit()
