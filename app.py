@@ -155,7 +155,7 @@ def generate_script_output():
 
     start_date = toolbox.date_str(time.time())
     if process.poll() == 0:
-        script_state = "Скрипт выполнил работу (можно забрат файл с данными)..."
+        script_state = "Скрипт завершил работу (нужно забрат файл с данными!)..."
         check_download_data['finish'] = True
         toolbox.save_json_data(json_data=check_download_data, path_file="check_download_data.json")
         print(f'\nFinish Process: {process.poll()=}')
@@ -208,9 +208,9 @@ def buttons():
         if check_download_data['finish'] and check_download_data['down']:
             if os.path.exists(file_path):
                 remove_folder(folder_path=file_path)
-                check_download_data = {'finish': False, 'down': False}
             if os.path.isfile(f"{file_path}.zip"):
                 os.remove(f"{file_path}.zip")
+            check_download_data = {'finish': False, 'down': False}
 
         print("Запуск script_tt.py")
         start_date = toolbox.date_str(time.time())
@@ -225,7 +225,8 @@ def buttons():
             time.sleep(1.5)
         script_state = "Скрипт остановлен (Возможно не все данные были собраны, запустите повторно...)"
         print(f"{process.poll()=} {type(process.poll())}")
-        button_state = 0
+        if not check_download_data['finish']:
+            button_state = 0
 
     return redirect(url_for('index'))
 
