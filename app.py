@@ -210,8 +210,8 @@ def buttons():
                 remove_folder(folder_path=file_path)
             if os.path.isfile(f"{file_path}.zip"):
                 os.remove(f"{file_path}.zip")
-            check_download_data = {'finish': False, 'down': False}
 
+        check_download_data = {'finish': False, 'down': False}
         print("Запуск script_tt.py")
         start_date = toolbox.date_str(time.time())
         threading.Thread(target=generate_script_output).start()
