@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div id="fh5co-wrapper">
+<div id="fh5co-page">
+
+	<div class="fh5co-hero">
+			<div class="fh5co-overlay"></div>
+			<div class="fh5co-cover text-center" data-stellar-background-ratio="0.5" style="background-image: url(../static/images/cover_bg_1.jpg);">
+				<div class="desc animate-box" style="top: 25%;">
+					<h2>Запуск Парсера <strong>Icodrops</strong></h2>
+					<span>Сбор данных с сайта
+						<a href="https://icodrops.com/" target="_blank" class="fh5co-site-name" style="border-bottom: 0px;">icodrops.com</a>
+					</span>
+
+
+					<div class="button-container" style="padding: 10px;">
+						<form method="post" action="{{ url_for('buttons') }}">
+							<button id="button1" type="submit" name="button_value" value="button1" class="btn btn-primary btn-lg btn-learn" style="background: rgb(67 152 36 / 53%);">
+								Запустить парсер
+							</button>
+
+							<button id="button2"  type="submit" name="button_value" value="button2" class="btn btn-primary btn-lg btn-learn" style="background: rgb(144 18 72 / 70%);">
+								Остановить парсер
+							</button>
+						</form>
+<!--					=====================================================================================-->
+						<form method="POST" action="/download">
+							<button id="button3" type="submit" name="button_value" value="button3" class="btn btn-primary btn-lg btn-learn" style="background: rgb(97 102 153 / 70%);">
+								Получить данные
+							</button>
+						</form>
+
+						<!-- Модальное окно для отображения уведомления -->
+						<div id="loading-modal" class="modal">
+							<div class="modal-content">
+								Подождите, идет загрузка файла...
+							</div>
+						</div>
+
+						<script>
+							$(document).ready(function() {
+								$(document).ajaxStart(function() {
+									$('#loading-modal').show();
+								});
+
+								$(document).ajaxStop(function() {
+									$('#loading-modal').hide();
+								});
+							});
+						</script>
+
+<!--					==============================================================================================-->
+
+						<a class="btn btn-primary btn-lg popup-vimeo btn-video" href="https://www.youtube.com/watch?v=D5DhwVNHWeU">
+							<i class="icon-play"></i> Watch Video
+						</a>
+					</div>
+<!--					{% for cat, msg in get_flashed_messages(True) %}-->
+<!--						<div class="card">-->
+<!--							<h1 class="{{ cat }}">{{ msg }}</h1>-->
+<!--						</div>-->
+<!--					{% endfor %}-->
+<!--				========================================================================================================-->
+
+    				<p id="current-time" style="color: rgba(255, 255, 255, 100.5);"></p>
+
+					<h3 style="color: rgba(255, 255, 255, 100.5);">Состояние скрипта:</h3>
+    				<p id="script-state" style="color: rgba(255, 255, 255, 100.5);">{{ script_state }}</p>
+					<script>
+						function updateTime() {
+							var currentTime = new Date().toLocaleString();
+							document.getElementById('current-time').textContent = currentTime;
+						}
+
+						setInterval(updateTime, 1000); // Обновление каждую секунду
+    				</script>
+
+					<script>
+						// Обработчик события SSE
+						const eventSource = new EventSource('/stream');
+
+						eventSource.onmessage = function(event) {
+							document.getElementById('script-state').textContent = event.data;
+						};
+    				</script>
+
+				</div>
+			</div>
+
+		</div>
+		<!-- end:header-top -->
+		<div id="fh5co-work">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 work">
+						<div class="row">
+							<div class="col-md-6 col-md-pull-2">
+								<div class="half-inner" style="background-image:url(../static/images/ff1.jpg); box-shadow: 0px 6px 16px 20px rgba(0, 0, 0, 0.3); height: 477px; width: 146%;">
+								</div>
+							</div>
+							<div class="col-md-6 animate-box">
+								<div class="desc">
+									<h3><a href="#">Что такое парсинг?</a></h3>
+									<p>Парсинг — это автоматизированный сбор и структурирование информации с сайтов при помощи программы или сервиса. Эта программа называется парсер и её задачей является сбор информации в соответствии с заданными параметрами.</p>
+									<p><a class="btn btn-primary" href="#">Learn More</a></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12 work">
+						<div class="row">
+							<div class="col-md-6 col-md-push-6">
+								<div class="half-inner half-inner2" style="background-image:url(../static/images/ff2.jpg); box-shadow: 0px 6px 16px 20px rgba(0, 0, 0, 0.3); width: 140% !important;">
+								</div>
+							</div>
+							<div class="col-md-6 col-md-pull-6 animate-box">
+								<div class="desc desc2">
+									<h3><a href="#">Python</a></h3>
+									<p>Python — это язык программирования, который широко используется в интернет-приложениях, разработке программного обеспечения, науке о данных и машинном обучении (ML). Разработчики используют Python, потому что он эффективен, прост в изучении и работает на разных платформах. Программы на языке Python можно скачать бесплатно, они совместимы со всеми типами систем и повышают скорость разработки.</p>
+									<p><a class="btn btn-primary" href="#">Learn More</a></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="fh5co-features">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-4 animate-box">
+
+							<div class="feature-left">
+								<span class="icon">
+									<i class="icon-laptop"></i>
+								</span>
+								<div class="feature-copy">
+									<h3>Retina Ready</h3>
+									<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit.</p>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="col-md-4 animate-box">
+							<div class="feature-left">
+								<span class="icon">
+									<i class="icon-mobile"></i>
+								</span>
+								<div class="feature-copy">
+									<h3>Responsive Layout</h3>
+									<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit.</p>
+								</div>
+							</div>
+
+						</div>
+						<div class="col-md-4 animate-box">
+							<div class="feature-left">
+								<span class="icon">
+									<i class="icon-browser"></i>
+								</span>
+								<div class="feature-copy">
+									<h3>Clean &amp; Minimal</h3>
+									<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+</div>
+<!-- END fh5co-page -->
+</div>
+	<!-- END fh5co-wrapper -->
+	<!-- jQuery -->
+
+	<script src="../static/js/jquery.min.js"></script>
+	<!-- jQuery Easing -->
+	<script src="../static/js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script src="../static/js/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script src="../static/js/jquery.waypoints.min.js"></script>
+	<!-- Stellar -->
+	<script src="../static/js/jquery.stellar.min.js"></script>
+	<!-- Superfish -->
+	<script src="../static/js/hoverIntent.js"></script>
+	<script src="../static/js/superfish.js"></script>
+	<!-- Magnific Popup -->
+	<script src="../static/js/jquery.magnific-popup.min.js"></script>
+	<script src="../static/js/magnific-popup-options.js"></script>
+
+	<!-- Main JS -->
+	<script src="../static/js/main.js"></script>
+
+{% endblock %}

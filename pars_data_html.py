@@ -1,0 +1,304 @@
+import os
+import re
+from pathlib import Path
+from urllib.parse import urlparse
+import toolbox
+from bs4 import BeautifulSoup
+import pandas as pd
+
+folder_path_active_ico = str(Path("Data", "Active ICO"))
+folder_path_ended_ico = str(Path("Data", "Ended ICO"))
+folder_path_upcoming_ico = str(Path("Data", "Upcoming ICO"))
+
+folder_path_active_ico_new = str(Path("New_Data", "Active ICO"))
+folder_path_ended_ico_new = str(Path("New_Data", "Ended ICO"))
+folder_path_upcoming_ico_new = str(Path("New_Data", "Upcoming ICO"))
+
+regex_social_lik = re.compile(r"\.\w+$")
+folders = [
+    folder_path_active_ico,
+    folder_path_ended_ico,
+    folder_path_upcoming_ico,
+
+    folder_path_active_ico_new,
+    folder_path_ended_ico_new,
+    folder_path_upcoming_ico_new,
+]
+
+
+def get_html_files(folder_path):
+    # Ищет все файлы .html в определенной папке.
+    html_files = []
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(".html"):
+                html_files.append(os.path.join(root, file))
+    return html_files
+
+
+def get_social_media_names(links_wb: list, data_dict: dict):
+    for social_link in links_wb:
+        parsed_url = urlparse(social_link)
+        website_name = parsed_url.netloc.replace('www.', '')
+        social_name = re.sub(regex_social_lik, '', website_name)
+        if social_name == 't':
+            social_name = 't.me'
+        data_dict[social_name] = social_link
+
+    return data_dict
+
+
+def get_important(soup, data_dict: dict):
+    data_dict['important_text_1'] = None
+    data_dict['important_link_1'] = None
+
+    important_tag = soup.find("div", {"class": "important-note"})
+    try:
+        important = re.sub(r"Details", "", str(important_tag)).replace('Important:', '').strip()
+    except:
+        return data_dict
+
+    important_tags = important.split('<br/>')
+    for t, tags_text_i in enumerate(important_tags, start=1):
+        if len(tags_text_i) < 7:
+            continue
+        # print(tags_text_i)
+        soup2 = BeautifulSoup(tags_text_i, "lxml")
+        important_text = soup2.text.replace(' ().', '').strip()
+        important_link = soup2.find('a')
+        if important_link:
+            important_link = important_link.get('href')
+
+        data_dict[f'important_text_{t}'] = important_text
+        data_dict[f'important_link_{t}'] = important_link
+
+    return data_dict
+
+
+def pars_txt_data():
+
+    for path_html_file_folder in folders:
+        total_data_list = []
+        path_files_html = get_html_files(path_html_file_folder)
+        print(f"{len(path_files_html)=}\n")
+
+        for file_ in path_files_html:
+            html_data = toolbox.download_txt_data(path_file=file_)
+            soup = BeautifulSoup(html_data, "lxml")
+
+            dict_data_text_cards = {
+                "path_dir": str(file_),
+                # "important": None,
+                "name": None,
+                "type_": None,
+                "about": None,
+                "token_sale": None,
+                "received": None,
+
+                "youtube_video_link": None,
+                "website": None,
+                "whitepaper": None,
+
+                "token_sale_date": None,
+                "ticker": None,
+                "token_type": None,
+                "ico_token_price": None,
+                "fundraising_goal": None,
+                "total_tokens": None,
+                "available_for_token_sale": None,
+                "min_max_personal_cap": None,
+                "accepts": None,
+                "role_of_token": None,
+
+                "Hype rate": None,
+                "Risk rate": None,
+                "ROI rate": None,
+                "ICO Drops Score": None,
+            }
+
+            dict_data_text_cards = get_important(soup, dict_data_text_cards)
+
+            name = soup.find("div", {"class": "ico-main-info"}).find("h3").text.strip()
+            dict_data_text_cards['name'] = name
+
+            type_ = soup.find("span", {"class": "ico-category-name"}).text
+            type_ = re.search(r"\(.+\)", type_)
+            if type_:
+                type_ = type_.group()
+            dict_data_text_cards['type_'] = type_
+
+            about = soup.find("div", {"class": "ico-description"})
+            if about:
+                about = about.text.strip()
+            dict_data_text_cards['about'] = about
+
+            con_sale = ''
+            try:
+                token_sale = soup.find("div", {"class": "token-sale"})
+                if token_sale:
+                    token_sale = token_sale.find("strong")
+                    if token_sale:
+                        token_sale = token_sale.text.replace('\n', '')
+                        if token_sale != '':
+                            con_sale = token_sale.replace('ended', 'ended ')
+                        else:
+                            sale_date = soup.find("div", {"class": "sale-date"})
+                            if sale_date:
+                                con_sale = sale_date.text
+                                # print(f"{sale_date=}")
+            except AttributeError:
+                print("2: ", file_)
+            dict_data_text_cards['token_sale'] = con_sale
+
+            received = soup.find("div", {"class": "fund-goal"}).text
+            received = received.replace('\n', ' ').strip()
+            dict_data_text_cards['received'] = received
+
+            website = soup.find("div", {"class": "ico-right-col"}).find("div", string="WEBSITE")
+            try:
+                website = website.parent.get('href')
+            except AttributeError:
+                print("3.0: ", file_)
+            dict_data_text_cards['website'] = website
+
+            whitepaper = soup.find("div", {"class": "ico-right-col"}).find("div", string="WHITEPAPER")
+            try:
+                whitepaper = whitepaper.parent.get('href')
+            except AttributeError:
+                print("3.1: ", file_)
+            dict_data_text_cards['whitepaper'] = whitepaper
+
+            social_links = [link.get("href") for link in soup.find("div", {"class": "soc_links"}).find_all("a")]
+
+            token_sale_date = soup.find("div", {"class": "col-12 title-h4"}).find("h4").text
+            token_sale_date = token_sale_date.replace("Token Sale:", "").replace("\n", "").strip()
+            if token_sale_date == 'Market & Returns':
+                token_sale_date = None
+            dict_data_text_cards['token_sale_date'] = token_sale_date
+
+            ticker_tag = soup.find("span", string="Ticker: ")
+            if ticker_tag:
+                ticker = ticker_tag.next_sibling.text.strip()
+            else:
+                ticker = None
+            dict_data_text_cards['ticker'] = ticker
+
+            token_type_tag = soup.find("span", string="Token type: ")
+            if token_type_tag:
+                token_type = token_type_tag.next_sibling.text.strip()
+            else:
+                token_type = None
+            dict_data_text_cards['token_type'] = token_type
+
+            ico_token_price_tag = soup.find("span", string="ICO Token Price:")
+            if ico_token_price_tag:
+                ico_token_price = ico_token_price_tag.next_sibling.text.strip()
+            else:
+                ico_token_price = None
+            dict_data_text_cards['ico_token_price'] = ico_token_price
+
+            youtube_video_link = soup.find("iframe", {"allow": True})
+            # print(f"{youtube_video_link=}")
+            if youtube_video_link:
+                youtube_video_link = youtube_video_link.get("src")
+            dict_data_text_cards['youtube_video_link'] = youtube_video_link
+
+            fundraising_goal_tag = soup.find("div", {"class": "fund-goal"}).find("div", {"class": "goal"})
+            if fundraising_goal_tag:
+                fundraising_goal = fundraising_goal_tag.text.strip()
+                fundraising_goal = re.search(r"\$.+(?=[ (])", fundraising_goal)
+                if fundraising_goal:
+                    fundraising_goal = fundraising_goal.group()
+            else:
+                fundraising_goal = None
+            dict_data_text_cards['fundraising_goal'] = fundraising_goal
+
+            total_tokens_tag = soup.find("span", string="Total Tokens: ")
+            if total_tokens_tag:
+                total_tokens = total_tokens_tag.next_sibling.text.strip()
+            else:
+                total_tokens = None
+            dict_data_text_cards['total_tokens'] = total_tokens
+
+            available_for_token_sale_tag = soup.find("span", string="Available for Token Sale: ")
+            if available_for_token_sale_tag:
+                available_for_token_sale = available_for_token_sale_tag.next_sibling.text.strip()
+            else:
+                available_for_token_sale = None
+            dict_data_text_cards['available_for_token_sale'] = available_for_token_sale
+
+            min_max_personal_cap_tag = soup.find("span", string="Min/Max Personal Cap: ")
+            if min_max_personal_cap_tag:
+                min_max_personal_cap = min_max_personal_cap_tag.next_sibling.text.strip()
+            else:
+                min_max_personal_cap = None
+            dict_data_text_cards['min_max_personal_cap'] = min_max_personal_cap
+
+            accepts_tag = soup.find("span", string="Accepts: ")
+            if accepts_tag:
+                accepts = accepts_tag.next_sibling.text.strip()
+            else:
+                accepts = None
+            dict_data_text_cards['accepts'] = accepts
+
+            role_of_token_tag = soup.find("span", string="Role of Token: ")
+            if role_of_token_tag:
+                role_of_token = role_of_token_tag.next_sibling.text.strip()
+            else:
+                role_of_token = None
+            dict_data_text_cards['role_of_token'] = role_of_token
+
+            try:
+                additional_links = [link_add.get('href') for link_add in soup.find(
+                    "div", {"class": "row list-thin"}).find_all('a')]
+                additional_links_name = [link_add.text.strip() for link_add in soup.find(
+                    "div", {"class": "row list-thin"}).find_all('a')]
+
+                count_links = 1
+                for link, name_lick in zip(additional_links, additional_links_name):
+                    dict_data_text_cards[f'additional_link{count_links}'] = link
+                    dict_data_text_cards[f'additional_name{count_links}'] = name_lick
+                    count_links += 1
+            except AttributeError:
+                pass
+                # print("4: ", file_)
+
+            dur_rating_block = soup.find("div", {"class": "ico-row rating-field"})
+            if dur_rating_block:
+                rating_boxs = soup.find_all("div", {"class": "rating-box"})
+                # print('\n')
+                for rating_box in rating_boxs:
+                    key_rating = rating_box.find("p", {"class": None})
+                    if key_rating:
+                        key_rating = key_rating.text.strip()
+                        if key_rating == "ICO Drps score":
+                            key_rating = "ICO Drops Score"
+                        dict_data_text_cards[key_rating] = rating_box.find("p", {"class": True}).text.strip()
+                    # print(rating_box.text)
+                    # print('--' * 40)
+
+            # print(
+            #     f"Important: {important}\n\nName: {name}\n\nType: {type_}\n\n"
+            #     f"Token Sale: {token_sale}\n\nReceived: {received}\n\nWebsite: {website}\n\n"
+            #     f"Social Links: {social_links} {len(social_links)=}\n\nToken sale date: {token_sale_date}\n\n"
+            #     f"Ticker: {ticker}\n\nToken type: {token_type}\n\nICO Token Price: {ico_token_price}\n\n"
+            #     f"Fundraising Goal: {fundraising_goal}\n\nTotal Tokens: {total_tokens}\n\n"
+            #     f"Available for Token Sale: {available_for_token_sale}\n\n"
+            #     f"Min/Max Personal Cap: {min_max_personal_cap}\n\nAccepts: {accepts}\n\n"
+            #     f"Role of Token: {role_of_token}\n\n"
+            #     f"ADDITIONAL LINKS: {additional_links}"
+            # )
+
+            data_df = get_social_media_names(social_links, dict_data_text_cards)
+            total_data_list.append(data_df)
+            # print('==' * 40)
+        df = pd.DataFrame(total_data_list)
+        path_res_xlsx = str(Path(path_html_file_folder, "Txt_Data_Cards.csv"))
+        try:
+            df.to_csv(path_res_xlsx, index=False)
+        except OSError:
+            pass
+
+
+if __name__ == '__main__':
+    pars_txt_data()

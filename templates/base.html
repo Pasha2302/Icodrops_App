@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Glow</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Free HTML5 Template by FREEHTML5.CO" />
+	<meta name="keywords" content="free html5, free template, free bootstrap, html5, css3, mobile first, responsive" />
+	<meta name="author" content="FREEHTML5.CO" />
+
+	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="../static/css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="../static/css/icomoon.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="../static/css/bootstrap.css">
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="../static/css/magnific-popup.css">
+	<!-- Superfish -->
+	<link rel="stylesheet" href="../static/css/superfish.css">
+
+	<link rel="stylesheet" href="../static/css/style.css">
+
+
+	<!-- Modernizr JS -->
+	<script src="../static/js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9] -->
+	<script src="../static/js/respond.min.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<style>
+		.button-container {
+			display: flex;
+			justify-content: center; /* Выравнивание по горизонтали */
+			align-items: center; /* Выравнивание по вертикали */
+			gap: 10px; /* Расстояние между кнопками */
+		}
+
+		.modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            width: 50%;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+		.button-container {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    	}
+
+		.btn {
+			margin-bottom: 10px;
+		}
+
+		@media (max-width: 768px) {
+			.button-container {
+				padding: 5px;
+			}
+		}
+	</style>
+
+</head>
+
+<body>
+	<div id="fh5co-header">
+		<header id="fh5co-header-section">
+			<div class="container">
+				<div class="nav-header">
+					<a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>
+					<h1 id="fh5co-logo"><a href="/sss">Glow</a></h1>
+					<!-- START #fh5co-menu-wrap -->
+					<nav id="fh5co-menu-wrap" role="navigation">
+						<ul class="sf-menu" id="fh5co-primary-menu">
+							<li class="active" style="zoom: 2;">
+								<a href="{{ menu[0].get('url') }}">{{ menu[0].get('name') }}</a>
+							</li>
+							<li style="zoom: 2;"><a href="{{ menu[1].get('url') }}">{{ menu[1].get('name') }}</a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</header>
+	</div>
+{% block content %}
+{% endblock content %}
+	<footer>
+		<div id="footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3 col-sm-12 col-sm-push-0 col-xs-12 col-xs-push-0">
+						<h3>About Us</h3>
+						<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. </p>
+					</div>
+					<div class="col-md-6 col-md-push-1 col-sm-12 col-sm-push-0 col-xs-12 col-xs-push-0">
+						<h3>Our Services</h3>
+						<ul class="float">
+							<li><a href="#">Web Design</a></li>
+							<li><a href="#">Branding &amp; Identity</a></li>
+							<li><a href="#">Free HTML5</a></li>
+							<li><a href="#">HandCrafted Templates</a></li>
+						</ul>
+						<ul class="float">
+							<li><a href="#">Free Bootstrap Template</a></li>
+							<li><a href="#">Free HTML5 Template</a></li>
+							<li><a href="#">Free HTML5 &amp; CSS3 Template</a></li>
+							<li><a href="#">HandCrafted Templates</a></li>
+						</ul>
+
+					</div>
+
+					<div class="col-md-2 col-md-push-1 col-sm-12 col-sm-push-0 col-xs-12 col-xs-push-0">
+						<h3>Follow Us</h3>
+						<ul class="fh5co-social">
+							<li><a href="#"><i class="icon-twitter2"></i> Twitter</a></li>
+							<li><a href="#"><i class="icon-facebook2"></i> Facebook</a></li>
+							<li><a href="#"><i class="icon-google-plus2"></i> Google Plus</a></li>
+							<li><a href="#"><i class="icon-instagram2"></i> Instagram</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="fh5co-copyright text-center">
+				<p>&copy; Разработка парсеров.
+					<span>Разработанно с
+						<i class="icon-heart"></i>by
+						<a href="https://t.me/Pasha_anz" target="_blank">Pavel Seedy</a>
+						Всегда на связи.
+						<a href="https://t.me/Pasha_anz" target="_blank">Telegram</a>
+					</span>
+				</p>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>
+

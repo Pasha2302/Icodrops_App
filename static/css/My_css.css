@@ -1,0 +1,18 @@
+
+
+#myid_1 {
+    margin-top: 62px !important;
+    height: 442px !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position-x: 50% !important;
+    background-position-y: 50% !important;
+}
+
+.section {
+    float: left;
+    margin: 0 2.5%;
+    width: 100%;
+}
+
+/*style="background-image: no-repeat url({{ url_for('static', filename='images/f1.jpg') }});" */
