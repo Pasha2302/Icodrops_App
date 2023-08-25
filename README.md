@@ -1,8 +1,10 @@
+# Python - version 3.10
+
 Запуск парсера:
-    # Python - version 3.10
+
     В консоле переходим в папку с программой, вводим последовательно команды:
     
-        - python3 -m venv venv      # Создание виртуального окружения
+        - python3 -m venv venv      # Создание виртуального окружения (эту команду нужнно ввести один раз.)
         - source venv/bin/activate  # Активация виртуального окружения (для Linux/macOS)
         - venv\Scripts\activate    # Активация виртуального окружения (для Windows)
         - pip install -r requirements.txt

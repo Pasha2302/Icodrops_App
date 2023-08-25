@@ -229,7 +229,7 @@ def buttons():
         if not check_download_data['finish']:
             button_state = 0
             script_state = "Скрипт остановлен (Возможно не все данные были собраны, запустите повторно...)"
-        
+
     return redirect(url_for('index'))
 
 
