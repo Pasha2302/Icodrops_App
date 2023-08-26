@@ -24,6 +24,8 @@ folders = [
     folder_path_ended_ico_new,
     folder_path_upcoming_ico_new,
 ]
+social_media_index = dict()
+count_social_link = 1
 
 
 def get_html_files(folder_path):
@@ -37,13 +39,19 @@ def get_html_files(folder_path):
 
 
 def get_social_media_names(links_wb: list, data_dict: dict):
+    global count_social_link
+    global social_media_index
+
     for social_link in links_wb:
         parsed_url = urlparse(social_link)
         website_name = parsed_url.netloc.replace('www.', '')
         social_name = re.sub(regex_social_lik, '', website_name)
         if social_name == 't':
             social_name = 't.me'
-        data_dict[social_name] = social_link
+        if social_name not in social_media_index.keys():
+            social_media_index[social_name] = count_social_link
+            count_social_link += 1
+        data_dict[f"{social_media_index[social_name]}_{social_name}"] = social_link
 
     return data_dict
 
@@ -75,6 +83,51 @@ def get_important(soup, data_dict: dict):
     return data_dict
 
 
+def get_token_sale(right_column, dict_data_text_cards):
+    con_sale = ''
+    try:
+        token_sale_tag = right_column.find("div", {"class": "token-sale"})
+        if token_sale_tag:
+            token_sale_strong = token_sale_tag.find("strong")
+            if token_sale_strong:
+                token_sale = token_sale_strong.text.replace('\n', '')
+                if token_sale != '':
+                    print(f"{token_sale=}")
+                    con_sale += token_sale.replace('ended', 'ended ')
+
+                if not token_sale_tag.find("div"):
+                    sale_date1 = right_column.find("div", class_="sale-date")
+                    if sale_date1:
+                        con_sale += ' ' + sale_date1.text
+                    sale_date2 = right_column.find("div", {"class": "sale-date active"})
+                    if sale_date2 and sale_date2 != sale_date1:
+                        if sale_date2:
+                            con_sale += ' ' + sale_date2.text
+    except Exception as err:
+        print(f"{err}\n !!! ERROR")
+
+    dict_data_text_cards['token_sale'] = con_sale
+    return dict_data_text_cards
+
+
+def sort_dicts_by_max_keys(list_of_dicts):
+    if not list_of_dicts:
+        return []
+    # Найти словарь с максимальным количеством ключей
+    max_dict = max(list_of_dicts, key=len)
+    # Отсортировать ключи эталонного словаря
+    sorted_keys = sorted(max_dict.keys())
+    # Создать новые словари с отсортированными ключами
+    sorted_dicts = [
+        {key: dct.get(key, None) for key in sorted_keys}
+        for dct in list_of_dicts
+    ]
+
+    # Отсортировать список новых словарей
+    # sorted_list = sorted(sorted_dicts, key=lambda x: [x[key] if x[key] is not None else "" for key in sorted_keys])
+    return sorted_dicts
+
+
 def pars_txt_data():
 
     for path_html_file_folder in folders:
@@ -87,7 +140,7 @@ def pars_txt_data():
             soup = BeautifulSoup(html_data, "lxml")
 
             dict_data_text_cards = {
-                "path_dir": str(file_),
+                "1_path_dir": str(file_),
                 # "important": None,
                 "name": None,
                 "type_": None,
@@ -132,24 +185,9 @@ def pars_txt_data():
                 about = about.text.strip()
             dict_data_text_cards['about'] = about
 
-            con_sale = ''
-            try:
-                token_sale = soup.find("div", {"class": "token-sale"})
-                if token_sale:
-                    token_sale = token_sale.find("strong")
-                    if token_sale:
-                        token_sale = token_sale.text.replace('\n', '')
-                        if token_sale != '':
-                            con_sale = token_sale.replace('ended', 'ended ')
-                        else:
-                            sale_date = soup.find("div", {"class": "sale-date"})
-                            if sale_date:
-                                con_sale = sale_date.text
-                                # print(f"{sale_date=}")
-            except AttributeError:
-                # print("2: ", file_)
-                pass
-            dict_data_text_cards['token_sale'] = con_sale
+            # =====================================================================================================
+            right_column = soup.find("div", {"class", "ico-right-col"})
+            dict_data_text_cards = get_token_sale(right_column, dict_data_text_cards)
 
             received = soup.find("div", {"class": "fund-goal"}).text
             received = received.replace('\n', ' ').strip()
@@ -295,12 +333,15 @@ def pars_txt_data():
             data_df = get_social_media_names(social_links, dict_data_text_cards)
             total_data_list.append(data_df)
             # print('==' * 40)
+
+        total_data_list = sort_dicts_by_max_keys(list_of_dicts=total_data_list)
         df = pd.DataFrame(total_data_list)
         path_res_xlsx = str(Path(path_html_file_folder, "Txt_Data_Cards.csv"))
         try:
             df.to_csv(path_res_xlsx, index=False)
         except OSError as os_err:
-            raise TypeError(str(os_err))
+            print(os_err)
+            pass
 
 
 if __name__ == '__main__':

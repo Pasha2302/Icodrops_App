@@ -94,11 +94,11 @@ async def main():
         toolbox.save_pickle_data(check_data_list_url, path_file='check_urls.bin')
 
     logger.info("Подождите, идет обработка текстовых данных с последующей записью в .csv")
+    print("\nПодождите, идет обработка текстовых данных с последующей записью в .csv")
     pars_txt_data()
+
     if os.path.isfile('data_urls.json'):
         os.remove('data_urls.json')
-    if os.path.isfile('index_r.txt'):
-        os.remove('index_r.txt')
     logger.info("Программа завершена...")
     print("Программа завершена...")
 
