@@ -14,6 +14,7 @@ import logging
 
 if os.path.isfile('main.log'):
     os.remove('main.log')
+
 logging.basicConfig(filename='main.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # Создание объекта logger
 logger = logging.getLogger(__name__)

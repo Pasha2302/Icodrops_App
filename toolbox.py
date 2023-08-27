@@ -158,7 +158,7 @@ def date_file(time_int):
     """Возвращает строку с датой и временем в формате '%d-%m-%Y_%H-%M-%S' для имени файла"""
     if time_int > 1670000000000:
         time_int = time_int // 1000
-    form_str = '%d-%m-%Y_%H-%M-%S'
+    form_str = '%d-%m-%Y_%H:%M:%S'
     return datetime.fromtimestamp(time_int).strftime(form_str)
 
 
