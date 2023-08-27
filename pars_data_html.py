@@ -132,7 +132,7 @@ def sort_dicts_by_max_keys(list_of_dicts):
     return sorted_dicts
 
 
-def pars_txt_data():
+def pars_txt_data(logger=None):
 
     for path_html_file_folder in folders:
         total_data_list = []
@@ -140,7 +140,8 @@ def pars_txt_data():
         print(f"{len(path_files_html)=}\n")
 
         for file_ in path_files_html:
-            print(f"Парсинг Файла: {file_=}\n{'--' * 40}")
+            if logger:
+                logger.info(f"Парсинг Файла: {file_=}\n{'--' * 40}")
             html_data = toolbox.download_txt_data(path_file=file_)
             soup = BeautifulSoup(html_data, "lxml")
 
