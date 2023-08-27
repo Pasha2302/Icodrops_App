@@ -141,7 +141,7 @@ def pars_txt_data(logger=None):
 
         for file_ in path_files_html:
             if logger:
-                logger.info(f"Парсинг Файла: {file_=}\n{'--' * 40}")
+                logger.info(f"Парсинг Файла: {file_=}")
             html_data = toolbox.download_txt_data(path_file=file_)
             soup = BeautifulSoup(html_data, "lxml")
 

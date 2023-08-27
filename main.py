@@ -97,9 +97,9 @@ async def main():
     logger.info("Подождите, идет обработка текстовых данных с последующей записью в .csv")
     print("\nПодождите, идет обработка текстовых данных с последующей записью в .csv")
     try:
-        pars_txt_data()
+        pars_txt_data(logger)
     except Exception as error_pars:
-        logger.info(str(error_pars))
+        logger.error(str(error_pars))
         raise TypeError(str(error_pars))
 
     if os.path.isfile('data_urls.json'):
@@ -109,12 +109,6 @@ async def main():
 
 
 if __name__ == '__main__':
-    try:
-        pars_txt_data(logger)
-    except Exception as error_pars:
-        logger.error(str(error_pars))
-        raise TypeError(str(error_pars))
-
     # pip freeze > requirements.txt
     if not os.path.exists('Data'):
         os.mkdir("Data")
