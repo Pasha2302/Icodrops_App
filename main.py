@@ -122,7 +122,7 @@ if __name__ == '__main__':
         try:
             obj_ses = toolbox.AiohttpSession(limit=15)
             aio_session = loop.run_until_complete(obj_ses.create_session())
-            # loop.run_until_complete(main())
+            loop.run_until_complete(main())
         except KeyboardInterrupt:
             pass
         except Exception as main_error:
