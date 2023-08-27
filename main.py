@@ -96,8 +96,12 @@ async def main():
 
     logger.info("Подождите, идет обработка текстовых данных с последующей записью в .csv")
     print("\nПодождите, идет обработка текстовых данных с последующей записью в .csv")
-    pars_txt_data()
-
+    try:
+        pars_txt_data()
+    except Exception as error_pars:
+        logger.error(str(error_pars))
+        raise TypeError(str(error_pars))
+        
     if os.path.isfile('data_urls.json'):
         os.remove('data_urls.json')
     logger.info("Программа завершена...")
