@@ -71,7 +71,11 @@ def get_important(soup, data_dict: dict):
         if len(tags_text_i) < 7:
             continue
         # print(tags_text_i)
-        soup2 = BeautifulSoup(tags_text_i, "lxml")
+        try:
+            soup2 = BeautifulSoup(tags_text_i, "lxml")
+        except Exception as err_soup:
+            print(f"{err_soup=}")
+
         important_text = soup2.text.replace(' ().', '').strip()
         important_link = soup2.find('a')
         if important_link:
@@ -92,7 +96,7 @@ def get_token_sale(right_column, dict_data_text_cards):
             if token_sale_strong:
                 token_sale = token_sale_strong.text.replace('\n', '')
                 if token_sale != '':
-                    print(f"{token_sale=}")
+                    # print(f"{token_sale=}")
                     con_sale += token_sale.replace('ended', 'ended ')
 
                 if not token_sale_tag.find("div"):
@@ -136,6 +140,7 @@ def pars_txt_data():
         print(f"{len(path_files_html)=}\n")
 
         for file_ in path_files_html:
+            print(f"Парсинг Файла: {file_=}\n{'--' * 40}")
             html_data = toolbox.download_txt_data(path_file=file_)
             soup = BeautifulSoup(html_data, "lxml")
 

@@ -114,7 +114,7 @@ if __name__ == '__main__':
     except Exception as error_pars:
         logger.error(str(error_pars))
         raise TypeError(str(error_pars))
-    
+
     # pip freeze > requirements.txt
     if not os.path.exists('Data'):
         os.mkdir("Data")
