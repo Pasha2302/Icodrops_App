@@ -101,7 +101,7 @@ async def main():
     except Exception as error_pars:
         logger.error(str(error_pars))
         raise TypeError(str(error_pars))
-        
+
     if os.path.isfile('data_urls.json'):
         os.remove('data_urls.json')
     logger.info("Программа завершена...")
@@ -109,6 +109,12 @@ async def main():
 
 
 if __name__ == '__main__':
+    try:
+        pars_txt_data()
+    except Exception as error_pars:
+        logger.error(str(error_pars))
+        raise TypeError(str(error_pars))
+    
     # pip freeze > requirements.txt
     if not os.path.exists('Data'):
         os.mkdir("Data")
@@ -122,7 +128,7 @@ if __name__ == '__main__':
         try:
             obj_ses = toolbox.AiohttpSession(limit=15)
             aio_session = loop.run_until_complete(obj_ses.create_session())
-            loop.run_until_complete(main())
+            # loop.run_until_complete(main())
         except KeyboardInterrupt:
             pass
         except Exception as main_error:
