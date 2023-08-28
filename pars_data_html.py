@@ -48,9 +48,11 @@ def get_social_media_names(links_wb: list, data_dict: dict):
         social_name = re.sub(regex_social_lik, '', website_name)
         if social_name == 't':
             social_name = 't.me'
+
         if social_name not in social_media_index.keys():
             social_media_index[social_name] = count_social_link
             count_social_link += 1
+
         data_dict[f"{social_media_index[social_name]}_{social_name}"] = social_link
 
     return data_dict

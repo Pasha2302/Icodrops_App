@@ -38,17 +38,12 @@ async def create_a_task_request(request_urls):
 
     for data_url in request_urls:
         if data_url in check_data_list_url:
-            if data_url in ['https://icodrops.com/bifrost/',
-                            'https://icodrops.com/cappasity/',
-                            'https://icodrops.com/artoken/'
-                            ]:
-                info = True
-                print("\nПроверка категории ранее полученной карточки")
             path_check_card = category_check.get_previous_category(source_url=data_url)
             if info:
                 print(f"{data_url=}\n{path_check_card=}")
 
         tasks_list.append(get_html_data(session=aio_session, url=data_url, path_check=path_check_card))
+        path_check_card = False
 
     res = await asyncio.gather(*tasks_list)
 
@@ -69,6 +64,15 @@ async def main():
     if not os.path.isfile('data_urls.json'):
         await start_get_cards_url(s=aio_session)
     data_urls = toolbox.download_json_data(path_file='data_urls.json')['data_urls']
+    # ---------------------------------------------------------------------------------------------
+    # data_urls = ['https://icodrops.com/wall-street-memes/']
+    # data_urls = [
+    #     'https://icodrops.com/wall-street-memes/', 'https://icodrops.com/ypredict/',
+    #     'https://icodrops.com/sango/', 'https://icodrops.com/artyfact/',
+    #     'https://icodrops.com/sei-network/', 'https://icodrops.com/cyberconnect/',
+    #     'https://icodrops.com/firepot-finance/', 'https://icodrops.com/magical-blocks/',
+    #     'https://icodrops.com/billionair/',
+    # ]
 
     total_len = len(data_urls)
     print(f"\nTotal Len Url: {total_len}")
