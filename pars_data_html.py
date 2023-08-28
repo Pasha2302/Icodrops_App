@@ -136,12 +136,15 @@ def pars_txt_data(logger=None):
 
     for path_html_file_folder in folders:
         total_data_list = []
+        name_category = os.path.split(path_html_file_folder)[-1].replace(' ', '_')
         path_files_html = get_html_files(path_html_file_folder)
-        print(f"{len(path_files_html)=}\n")
+        count_cards = len(path_files_html)
+        print(f"{count_cards=}\n")
+        if logger:
+            logger.info(f"Парсинг категории: {name_category}. Всего карточек: {count_cards}")
 
+        
         for file_ in path_files_html:
-            if logger:
-                logger.info(f"Парсинг Файла: {file_=}")
             html_data = toolbox.download_txt_data(path_file=file_)
             soup = BeautifulSoup(html_data, "lxml")
 
@@ -342,7 +345,7 @@ def pars_txt_data(logger=None):
 
         total_data_list = sort_dicts_by_max_keys(list_of_dicts=total_data_list)
         df = pd.DataFrame(total_data_list)
-        path_res_xlsx = str(Path(path_html_file_folder, "Txt_Data_Cards.csv"))
+        path_res_xlsx = str(Path(path_html_file_folder, f"Txt_Data_Cards_{name_category}.csv"))
         try:
             df.to_csv(path_res_xlsx, index=False)
         except OSError as os_err:
