@@ -39,6 +39,9 @@ def get_html_files(folder_path):
 
 
 def get_social_media_names(links_wb: list, data_dict: dict):
+    # if data_dict['name'] == 'Wall Street Memes':
+    #     print(f"{links_wb=}\n{data_dict['name']=}")
+    #     print('--' * 40)
     global count_social_link
     global social_media_index
 
@@ -55,6 +58,10 @@ def get_social_media_names(links_wb: list, data_dict: dict):
 
         data_dict[f"{social_media_index[social_name]}_{social_name}"] = social_link
 
+    # if data_dict['name'] == 'Wall Street Memes':
+    #     for k, v in data_dict.items():
+    #         print(f"{k}: {v}")
+    #     print('==' * 40)
     return data_dict
 
 
@@ -117,18 +124,22 @@ def get_token_sale(right_column, dict_data_text_cards):
 
 
 def sort_dicts_by_max_keys(list_of_dicts):
+    set_keys = set()
     if not list_of_dicts:
         return []
-    # Найти словарь с максимальным количеством ключей
-    max_dict = max(list_of_dicts, key=len)
+    # Собираем все ключи словарей:
+    for data_dict in list_of_dicts:
+        for key in data_dict:
+            set_keys.add(key)
+    # max_dict = max(list_of_dicts, key=len)
     # Отсортировать ключи эталонного словаря
-    sorted_keys = sorted(max_dict.keys())
+    # sorted_keys = sorted(max_dict.keys())
+    sorted_keys = sorted(list(set_keys))
     # Создать новые словари с отсортированными ключами
     sorted_dicts = [
         {key: dct.get(key, None) for key in sorted_keys}
         for dct in list_of_dicts
     ]
-
     # Отсортировать список новых словарей
     # sorted_list = sorted(sorted_dicts, key=lambda x: [x[key] if x[key] is not None else "" for key in sorted_keys])
     return sorted_dicts
@@ -151,8 +162,7 @@ def pars_txt_data(logger=None):
             soup = BeautifulSoup(html_data, "lxml")
 
             dict_data_text_cards = {
-                "1_path_dir": str(file_),
-                # "important": None,
+                "1_apath_dir": str(file_),
                 "name": None,
                 "type_": None,
                 "about": None,
